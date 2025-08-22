@@ -1,0 +1,111 @@
+spring:
+  application:
+    name: gateway-service
+
+  security:
+    jwt:
+      secret-key: YourVerySecretKey
+      token-duration: 1D
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-login
+          uri: lb://auth-service
+          predicates:
+            - Path=/matchx/api/auth/**
+
+        - id: user-registration
+          uri: lb://auth-service
+          predicates:
+            - Path=/matchx/api/users/**
+
+        - id: supplier-route
+          uri: lb://supplier-service
+          predicates:
+            - Path=/matchx/api/suppliers/**
+          # filters:
+          #   - StripPrefix=1
+          #   - PrefixPath=/api/suppliers
+          #   - CircuitBreaker=myCircuitBreaker
+
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/matchx/api/products/**
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/matchx/api/orders/**
+
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/matchx/api/notifications/**
+          
+        - id: auth-service-swagger
+          uri: lb://auth-service
+          predicates:
+            - Path=/matchx/api/auth/v3/api-docs, /matchx/api/auth/swagger-ui.html
+          filters:
+            - StripPrefix=3
+
+        - id: product-service-swagger
+          uri: lb://product-service
+          predicates:
+            - Path=/matchx/api/products/v3/api-docs, /matchx/api/products/swagger-ui.html
+          filters:
+            - StripPrefix=3
+
+        - id: order-service-swagger
+          uri: lb://order-service
+          predicates:
+            - Path=/matchx/api/orders/v3/api-docs, /matchx/api/orders/swagger-ui.html
+          filters:
+            - StripPrefix=3
+
+        - id: supplier-service-swagger
+          uri: lb://supplier-service
+          predicates:
+            - Path=/matchx/api/suppliers/v3/api-docs, /matchx/api/suppliers/swagger-ui.html
+          filters:
+            - StripPrefix=3
+    
+            
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: auth-service
+        url: /matchx/api/auth/v3/api-docs
+      - name: product-service
+        url: /matchx/api/products/v3/api-docs
+      - name: order-service
+        url: /matchx/api/orders/v3/api-docs
+      - name: supplier-service
+        url: /matchx/api/suppliers/v3/api-docs
+
+server:
+  port: 8111
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://registry-service:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
