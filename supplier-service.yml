@@ -2,10 +2,10 @@ spring:
   application:
     name: supplier-service
   kafka:
-    bootstrap-servers: kafka1:9092
+    bootstrap-servers: localhost:9092
 
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/supplierdb
+    url: jdbc:postgresql://localhost:5432/supplierdb
     username: postgres
     password: postgres
 
@@ -20,7 +20,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://registry-service:8761/eureka
+      defaultZone: http://localhost:8761/eureka
     register-with-eureka: true
     fetch-registry: true
   instance:
@@ -59,3 +59,4 @@ management:
   health:
     circuitbreakers:
       enabled: true
+
